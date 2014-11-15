@@ -37,22 +37,16 @@ namespace StopLights
             for (int i = 0; i < 4; i++)
                 lights[i] = new stopLight();
 
-            enableButtons();
-            initializeStopLights();
             changeLights(3);
-        }
-
-        //What it says on the tin.
-        private void enableButtons()
-        {
-            button1.IsEnabled = true;
-            button2.IsEnabled = true;
-            button3.IsEnabled = true;
-            button4.IsEnabled = true;
+            initializeStopLights();
+            changeLights(2);
         }
 
         private void initializeStopLights()
         {
+            LightOne.DataContext = lights[0];
+            LightTwo.DataContext = lights[1];
+            LightThree.DataContext = lights[2];
             LightFour.DataContext = lights[3];
             
         }

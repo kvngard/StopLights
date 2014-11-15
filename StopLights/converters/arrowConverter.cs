@@ -5,20 +5,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Data;
-using System.Windows.Media;
 
 namespace StopLights.converters
 {
-    class greenLightConverter : IValueConverter
+    class arrowConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             bool val = System.Convert.ToBoolean(value);
 
             if (val == true)
-                return Brushes.Green;
+                return "Visible";
             else
-                return Brushes.Gray;
+                return "Hidden";
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
