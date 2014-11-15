@@ -4,12 +4,24 @@
         Title="MainWindow" Height="350" Width="525">
     <Grid>
         <Rectangle x:Name="One" Fill="#FF686868" HorizontalAlignment="Left" Height="104" Margin="226,26,0,0" Stroke="Black" VerticalAlignment="Top" Width="55"/>
-        <Rectangle x:Name="Two" Fill="#FF686868" HorizontalAlignment="Left" Height="104" Margin="340,112,0,0" Stroke="Black" VerticalAlignment="Top" Width="55"/>
+        <Rectangle x:Name="OneRed" Fill="#FFDA0000" HorizontalAlignment="Left" Height="45" Margin="231,32,0,0" Stroke="Black" VerticalAlignment="Top" Width="45" RadiusY="50" RadiusX="50"/>
+        <Rectangle x:Name="OneGreen" Fill="#FF00DA32" HorizontalAlignment="Left" Height="45" Margin="231,80,0,0" Stroke="Black" VerticalAlignment="Top" Width="45" RadiusY="50" RadiusX="50"/>
+
+        <Rectangle x:Name="Two" Fill="#FF686868" HorizontalAlignment="Left" Height="104" Margin="342,96,0,0" Stroke="Black" VerticalAlignment="Top" Width="55"/>
+        <Rectangle x:Name="TwoRed" Fill="#FFDA0000" HorizontalAlignment="Left" Height="45" Margin="347,100,0,0" Stroke="Black" VerticalAlignment="Top" Width="45" RadiusY="50" RadiusX="50"/>
+        <Rectangle x:Name="TwoGreen" Fill="#FF00DA32" HorizontalAlignment="Left" Height="45" Margin="347,151,0,0" Stroke="Black" VerticalAlignment="Top" Width="45" RadiusY="50" RadiusX="50"/>
+
         <Rectangle x:Name="Three" Fill="#FF686868" HorizontalAlignment="Left" Height="158" Margin="226,151,0,0" Stroke="Black" VerticalAlignment="Top" Width="55"/>
-        <Rectangle x:Name="Four" Fill="#FF686868" HorizontalAlignment="Left" Height="104" Margin="113,113,0,0" Stroke="Black" VerticalAlignment="Top" Width="55"/>
         <Rectangle x:Name="ThreeRed" Fill="#FFDA0000" HorizontalAlignment="Left" Height="45" Margin="231,158,0,0" Stroke="Black" VerticalAlignment="Top" Width="45" RadiusY="50" RadiusX="50"/>
         <Rectangle x:Name="ThreeGreen" Fill="#FF00DA32" HorizontalAlignment="Left" Height="45" Margin="231,208,0,0" Stroke="Black" VerticalAlignment="Top" Width="45" RadiusY="50" RadiusX="50"/>
-        <Rectangle x:Name="ThreeArrow" Fill="#FFB7B8B7" HorizontalAlignment="Left" Height="45" Margin="231,258,0,0" Stroke="Black" VerticalAlignment="Top" Width="45" RadiusY="50" RadiusX="50"/>
+        <Rectangle x:Name="ThreeArrowBack" Fill="#FFB7B8B7" HorizontalAlignment="Left" Height="45" Margin="231,258,0,0" Stroke="Black" VerticalAlignment="Top" Width="45" RadiusY="50" RadiusX="50"/>
+        <Path x:Name="ThreeArrowLeft" Width="26.8469" Height="21.5698" Stretch="Uniform" Fill="#FF00DA32" Data="F1 M 0,10.7852L 14.0247,21.5698L 14.0247,14.7494L 26.8469,14.7494L 26.8469,6.82025L 14.0247,6.82025L 14.0247,0L 0,10.7852 Z " Margin="239.076,269.715,251.076,27.715" Stroke="Black" Visibility="Visible"/>
+
+        <Rectangle x:Name="Four" Fill="#FF686868" HorizontalAlignment="Left" Height="161" Margin="114,73,0,0" Stroke="Black" VerticalAlignment="Top" Width="55"/>
+        <Rectangle x:Name="FourGreen" Fill="#FF00DA32" HorizontalAlignment="Left" Height="45" Margin="119,129,0,0" Stroke="Black" VerticalAlignment="Top" Width="45" RadiusY="50" RadiusX="50"/>
+        <Rectangle x:Name="FourRed" Fill="#FFDA0000" HorizontalAlignment="Left" Height="45" Margin="119,77,0,0" Stroke="Black" VerticalAlignment="Top" Width="45" RadiusY="50" RadiusX="50"/>
+        <Rectangle x:Name="FourArrowBackground" Fill="#FFB7B8B7" HorizontalAlignment="Left" Height="45" Margin="119,179,0,0" Stroke="Black" VerticalAlignment="Top" Width="45" RadiusY="50" RadiusX="50"/>
+        <Path x:Name="FourArrowRight" Width="26.8469" Height="21.5697" Stretch="Uniform" Fill="#FF00DA32" Data="F1 M 26.8469,10.7846L 12.8223,0L 12.8223,6.8204L 0,6.8204L 0,14.7495L 12.8223,14.7495L 12.8223,21.5697L 26.8469,10.7846 Z " Margin="129.153,190.43,361,107" Stroke="Black"/>
 
     </Grid>
 </Window>
