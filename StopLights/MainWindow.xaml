@@ -1,0 +1,15 @@
+﻿<Window x:Class="StopLights.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="MainWindow" Height="350" Width="525">
+    <Grid>
+        <Rectangle x:Name="One" Fill="#FF686868" HorizontalAlignment="Left" Height="104" Margin="226,26,0,0" Stroke="Black" VerticalAlignment="Top" Width="55"/>
+        <Rectangle x:Name="Two" Fill="#FF686868" HorizontalAlignment="Left" Height="104" Margin="340,112,0,0" Stroke="Black" VerticalAlignment="Top" Width="55"/>
+        <Rectangle x:Name="Three" Fill="#FF686868" HorizontalAlignment="Left" Height="158" Margin="226,151,0,0" Stroke="Black" VerticalAlignment="Top" Width="55"/>
+        <Rectangle x:Name="Four" Fill="#FF686868" HorizontalAlignment="Left" Height="104" Margin="113,113,0,0" Stroke="Black" VerticalAlignment="Top" Width="55"/>
+        <Rectangle x:Name="ThreeRed" Fill="#FFDA0000" HorizontalAlignment="Left" Height="45" Margin="231,158,0,0" Stroke="Black" VerticalAlignment="Top" Width="45" RadiusY="50" RadiusX="50"/>
+        <Rectangle x:Name="ThreeGreen" Fill="#FF00DA32" HorizontalAlignment="Left" Height="45" Margin="231,208,0,0" Stroke="Black" VerticalAlignment="Top" Width="45" RadiusY="50" RadiusX="50"/>
+        <Rectangle x:Name="ThreeArrow" Fill="#FFB7B8B7" HorizontalAlignment="Left" Height="45" Margin="231,258,0,0" Stroke="Black" VerticalAlignment="Top" Width="45" RadiusY="50" RadiusX="50"/>
+
+    </Grid>
+</Window>
