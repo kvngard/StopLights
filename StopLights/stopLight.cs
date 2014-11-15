@@ -8,8 +8,15 @@ namespace StopLights
 {
     class stopLight
     {
-        public bool isGreen { get; set; }
-        public stopLight() { }
+        public bool isLightGreen { get; set; }
+        public bool isArrowGreen { get; set; }
+        public int amountCarsWaiting { get; set; }
+
+
+        public stopLight() 
+        {
+            amountCarsWaiting = 0;
+        }
 
     }
 }

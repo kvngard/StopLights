@@ -1,27 +1,47 @@
 ﻿<Window x:Class="StopLights.MainWindow"
+        xmlns:local="clr-namespace:StopLights"
+        xmlns:converters="clr-namespace:StopLights.converters"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="MainWindow" Height="350" Width="525">
     <Grid>
-        <Rectangle x:Name="One" Fill="#FF686868" HorizontalAlignment="Left" Height="104" Margin="226,26,0,0" Stroke="Black" VerticalAlignment="Top" Width="55"/>
-        <Rectangle x:Name="OneRed" Fill="#FFDA0000" HorizontalAlignment="Left" Height="45" Margin="231,32,0,0" Stroke="Black" VerticalAlignment="Top" Width="45" RadiusY="50" RadiusX="50"/>
-        <Rectangle x:Name="OneGreen" Fill="#FF00DA32" HorizontalAlignment="Left" Height="45" Margin="231,80,0,0" Stroke="Black" VerticalAlignment="Top" Width="45" RadiusY="50" RadiusX="50"/>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="262.5*"/>
+            <ColumnDefinition Width="262.5*"/>
+        </Grid.ColumnDefinitions>
+        
+        <Rectangle x:Name="One" Fill="#FF686868" HorizontalAlignment="Left" Height="104" Margin="231,26,0,0" Stroke="Black" VerticalAlignment="Top" Width="55" Grid.ColumnSpan="2"/>
+        <Rectangle x:Name="OneRed" Fill="Red" HorizontalAlignment="Left" Height="45" Margin="236,33,0,0" Stroke="Black" VerticalAlignment="Top" Width="45" RadiusY="50" RadiusX="50" Grid.ColumnSpan="2"/>
+        <Rectangle x:Name="OneGreen" Fill="Green" HorizontalAlignment="Left" Height="45" Margin="236,81,0,0" Stroke="Black" VerticalAlignment="Top" Width="45" RadiusY="50" RadiusX="50" Grid.ColumnSpan="2"/>
+        <Button x:Name="button1" Content="Car at #1" HorizontalAlignment="Left" Margin="131,26,0,0" VerticalAlignment="Top" Width="75" Click="button_Click"/>
 
-        <Rectangle x:Name="Two" Fill="#FF686868" HorizontalAlignment="Left" Height="104" Margin="342,96,0,0" Stroke="Black" VerticalAlignment="Top" Width="55"/>
-        <Rectangle x:Name="TwoRed" Fill="#FFDA0000" HorizontalAlignment="Left" Height="45" Margin="347,100,0,0" Stroke="Black" VerticalAlignment="Top" Width="45" RadiusY="50" RadiusX="50"/>
-        <Rectangle x:Name="TwoGreen" Fill="#FF00DA32" HorizontalAlignment="Left" Height="45" Margin="347,151,0,0" Stroke="Black" VerticalAlignment="Top" Width="45" RadiusY="50" RadiusX="50"/>
+        <Rectangle x:Name="Two" Fill="#FF686868" HorizontalAlignment="Left" Height="104" Margin="85,95,0,0" Stroke="Black" VerticalAlignment="Top" Width="55" Grid.Column="1"/>
+        <Rectangle x:Name="TwoRed" Fill="Red" HorizontalAlignment="Left" Height="45" Margin="90,99,0,0" Stroke="Black" VerticalAlignment="Top" Width="45" RadiusY="50" RadiusX="50" Grid.Column="1"/>
+        <Rectangle x:Name="TwoGreen" Fill="Green" HorizontalAlignment="Left" Height="45" Margin="90,150,0,0" Stroke="Black" VerticalAlignment="Top" Width="45" RadiusY="50" RadiusX="50" Grid.Column="1"/>
+        <Button x:Name="button2" Content="Car at #2" Grid.Column="1" HorizontalAlignment="Left" Margin="154,142,0,0" VerticalAlignment="Top" Width="75"/>
 
-        <Rectangle x:Name="Three" Fill="#FF686868" HorizontalAlignment="Left" Height="158" Margin="226,151,0,0" Stroke="Black" VerticalAlignment="Top" Width="55"/>
-        <Rectangle x:Name="ThreeRed" Fill="#FFDA0000" HorizontalAlignment="Left" Height="45" Margin="231,158,0,0" Stroke="Black" VerticalAlignment="Top" Width="45" RadiusY="50" RadiusX="50"/>
-        <Rectangle x:Name="ThreeGreen" Fill="#FF00DA32" HorizontalAlignment="Left" Height="45" Margin="231,208,0,0" Stroke="Black" VerticalAlignment="Top" Width="45" RadiusY="50" RadiusX="50"/>
-        <Rectangle x:Name="ThreeArrowBack" Fill="#FFB7B8B7" HorizontalAlignment="Left" Height="45" Margin="231,258,0,0" Stroke="Black" VerticalAlignment="Top" Width="45" RadiusY="50" RadiusX="50"/>
-        <Path x:Name="ThreeArrowLeft" Width="26.8469" Height="21.5698" Stretch="Uniform" Fill="#FF00DA32" Data="F1 M 0,10.7852L 14.0247,21.5698L 14.0247,14.7494L 26.8469,14.7494L 26.8469,6.82025L 14.0247,6.82025L 14.0247,0L 0,10.7852 Z " Margin="239.076,269.715,251.076,27.715" Stroke="Black" Visibility="Visible"/>
+        <Rectangle x:Name="Three" Fill="#FF686868" HorizontalAlignment="Left" Height="158" Margin="231,151,0,0" Stroke="Black" VerticalAlignment="Top" Width="55" Grid.ColumnSpan="2"/>
+        <Rectangle x:Name="ThreeRed" Fill="Red" HorizontalAlignment="Left" Height="45" Margin="236,157,0,0" Stroke="Black" VerticalAlignment="Top" Width="45" RadiusY="50" RadiusX="50" Grid.ColumnSpan="2"/>
+        <Rectangle x:Name="ThreeGreen" Fill="Green" HorizontalAlignment="Left" Height="45" Margin="236,209,0,0" Stroke="Black" VerticalAlignment="Top" Width="45" RadiusY="50" RadiusX="50" Grid.ColumnSpan="2"/>
+        <Rectangle x:Name="ThreeArrowBack" Fill="Gray" HorizontalAlignment="Left" Height="45" Margin="236,260,0,0" Stroke="Black" VerticalAlignment="Top" Width="45" RadiusY="50" RadiusX="50" Grid.ColumnSpan="2"/>
+        <Path x:Name="ThreeArrowLeft" Width="26.8469" Height="21.5698" Stretch="Uniform" Fill="Green" Data="F1 M 0,10.7852L 14.0247,21.5698L 14.0247,14.7494L 26.8469,14.7494L 26.8469,6.82025L 14.0247,6.82025L 14.0247,0L 0,10.7852 Z " Margin="244.076,271.715,246.077,25.715" Stroke="Black" Visibility="Visible" Grid.ColumnSpan="2"/>
+        <Button x:Name="button3" Content="Car at #3" Grid.Column="1" HorizontalAlignment="Left" Margin="49,278,0,0" VerticalAlignment="Top" Width="75"/>
 
-        <Rectangle x:Name="Four" Fill="#FF686868" HorizontalAlignment="Left" Height="161" Margin="114,73,0,0" Stroke="Black" VerticalAlignment="Top" Width="55"/>
-        <Rectangle x:Name="FourGreen" Fill="#FF00DA32" HorizontalAlignment="Left" Height="45" Margin="119,129,0,0" Stroke="Black" VerticalAlignment="Top" Width="45" RadiusY="50" RadiusX="50"/>
-        <Rectangle x:Name="FourRed" Fill="#FFDA0000" HorizontalAlignment="Left" Height="45" Margin="119,77,0,0" Stroke="Black" VerticalAlignment="Top" Width="45" RadiusY="50" RadiusX="50"/>
-        <Rectangle x:Name="FourArrowBackground" Fill="#FFB7B8B7" HorizontalAlignment="Left" Height="45" Margin="119,179,0,0" Stroke="Black" VerticalAlignment="Top" Width="45" RadiusY="50" RadiusX="50"/>
-        <Path x:Name="FourArrowRight" Width="26.8469" Height="21.5697" Stretch="Uniform" Fill="#FF00DA32" Data="F1 M 26.8469,10.7846L 12.8223,0L 12.8223,6.8204L 0,6.8204L 0,14.7495L 12.8223,14.7495L 12.8223,21.5697L 26.8469,10.7846 Z " Margin="129.153,190.43,361,107" Stroke="Black"/>
+        <Canvas x:Name="LightFour" Margin="107,45,66,54">
+            <Canvas.Resources>
+                <converters:redLightConverter x:Key="redConverter"/>
+                <converters:greenLightConverter x:Key="greenConverter"/>
+            </Canvas.Resources>
+            <Rectangle x:Name="Four" Fill="#FF686868" HorizontalAlignment="Left" Height="161" Stroke="Black" VerticalAlignment="Top" Width="55" Canvas.Left="16" Canvas.Top="26"/>
+            <Rectangle x:Name="FourGreen"  Fill="{Binding isLightGreen, Converter={StaticResource greenConverter}}" HorizontalAlignment="Left" Height="45" Stroke="Black" VerticalAlignment="Top" Width="45" RadiusY="50" RadiusX="50" Canvas.Left="21" Canvas.Top="82"/>
+            <Rectangle x:Name="FourRed" Fill="{Binding isLightGreen, Converter={StaticResource redConverter}}" HorizontalAlignment="Left" Height="45" Stroke="Black" VerticalAlignment="Top" Width="45" RadiusY="50" RadiusX="50" Canvas.Left="21" Canvas.Top="30"/>
+            <Rectangle x:Name="FourArrowBack" Fill="Gray" HorizontalAlignment="Left" Height="45" Stroke="Black" VerticalAlignment="Top" Width="45" RadiusY="50" RadiusX="50" Canvas.Left="21" Canvas.Top="132"/>
+            <Path x:Name="FourArrowRight" Width="26.847" Height="21.57" Stretch="Uniform" Fill="Green" Data="F1 M 26.8469,10.7846L 12.8223,0L 12.8223,6.8204L 0,6.8204L 0,14.7495L 12.8223,14.7495L 12.8223,21.5697L 26.8469,10.7846 Z " Stroke="Black" Canvas.Left="30" Canvas.Top="145.43"/>
+            <Button x:Name="button4" Content="Car at #4" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Canvas.Left="-76" Canvas.Top="94"/>
+            <Label Content="{Binding isLightGreen , Converter={StaticResource redConverter}}"  Canvas.Left="51" Canvas.Top="200"/>
+        </Canvas>
+
+        <Button x:Name="startButton" Content="Start" HorizontalAlignment="Left" Margin="10,289,0,0" VerticalAlignment="Top" Width="75" Click="startButton_Click"/>
 
     </Grid>
 </Window>
