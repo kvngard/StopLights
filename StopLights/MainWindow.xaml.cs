@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -21,7 +22,7 @@ namespace StopLights
     /// Interaction logic for MainWindow.xaml
     /// </summary>
 
-    public partial class MainWindow : Window
+    public partial class MainWindow : Window, INotifyPropertyChanged
     {
         //Value used to parse the int from the button names using substring in the button_Click handler.
         private const int AFTERBUTTON = 6;
@@ -35,7 +36,22 @@ namespace StopLights
         private static stopLight[] lights;
         private static Queue<int> lightOrder;
         private static DispatcherTimer dispatcherTimer;
+        private static bool transitioning;
         private static int stopWatch;
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private static string lightListText = "Cars are waiting at:\n";
+
+        public string lightListHandler
+        {
+            get { return lightListText; }
+            set
+            {
+                lightListText = value;
+                OnPropertyChanged("lightListHandler");
+            }
+        }
 
         public MainWindow()
         {
@@ -62,7 +78,7 @@ namespace StopLights
             lights = new stopLight[4];
 
             for (int i = 0; i < 4; i++)
-                lights[i] = new stopLight();
+                lights[i] = new stopLight(i);
 
             lightOrder = new Queue<int>();
             initializeStopLights();
@@ -77,6 +93,7 @@ namespace StopLights
             LightTwo.DataContext = lights[1];
             LightThree.DataContext = lights[2];
             LightFour.DataContext = lights[3];
+            lightList.DataContext = lightListText;
 
             initalizeLightColors();
         }
@@ -85,6 +102,7 @@ namespace StopLights
         private static async Task changeLights(int lightID) 
         {
             currentLight = lightID;
+            lights[currentLight].carsWaiting = false;
 
             await transitionToRed();
             await Task.Delay(ONESECOND);
@@ -95,7 +113,6 @@ namespace StopLights
                     lights[0].lightColor = Brushes.Green;
                     break;
                 case 1:
-                case 3:
                     lights[1].lightColor = Brushes.Green;
                     lights[3].lightColor = Brushes.Green;
                     lights[3].arrowColor = Brushes.Green;
@@ -131,6 +148,7 @@ namespace StopLights
                     light.arrowColor = Brushes.Red;
             }
 
+            transitioning = false;
         }
 
         private static void initalizeLightColors()
@@ -145,29 +163,66 @@ namespace StopLights
         private void button_Click(object sender, RoutedEventArgs e)
         {
             int lightID = Convert.ToInt32(((Button)sender).Name.Substring(AFTERBUTTON))-1;
-            
-            if(lightID != currentLight && !lightOrder.Contains(lightID))
+
+            if (lightID == 3)
+                lightID = 1;
+
+            if (lightID != currentLight && !lightOrder.Contains(lightID)) 
+            { 
+                if(lightOrder.Count == 0)
+                    lights[currentLight].carsWaiting = false;
+
                 lightOrder.Enqueue(lightID);
+                
+            }
 
             lights[lightID].carsWaiting = true;
         }
 
         private static async void dispatcherTimer_Tick(object sender, EventArgs e)
         {
-            if(lightOrder.Count != 0)
+            if (lightOrder.Count == 0 && currentLight == 2)
+                return;
+
+            displayQueue();
+
+            if (!transitioning)
                 stopWatch++;
 
-            if ((stopWatch == 5 || stopWatch == 16) && !lights[currentLight].carsWaiting && lightOrder.Count != 0)
+            if (lightOrder.Count == 0 && currentLight != 2 && stopWatch == 5)
+                lightOrder.Enqueue(2);
+
+            if ((stopWatch == 5 || stopWatch == 30) && !lights[currentLight].carsWaiting)
             {
-                await changeLights(lightOrder.Dequeue());
-                stopWatch = 0;
+                transitioning = true;
+                stopWatch = 0; 
+                await changeLights(lightOrder.Dequeue());  
             }
             else if (stopWatch == 5 && lights[currentLight].carsWaiting)
             {
-                await Task.Delay(10000);
+                await Task.Delay(24000);
                 lights[currentLight].carsWaiting = false;
             }
+            
         }
-        
+
+        private static void displayQueue()
+        {
+            lightListText = "Cars are waiting at:\n";
+
+            foreach(int i in lightOrder)
+            {
+                lightListText += lights[i].name;
+            }
+        }
+
+        protected void OnPropertyChanged(string name)
+        {
+            PropertyChangedEventHandler handler = PropertyChanged;
+            if (handler != null)
+            {
+                handler(this, new PropertyChangedEventArgs(name));
+            }
+        }
     }
 }

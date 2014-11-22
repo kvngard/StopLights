@@ -53,6 +53,7 @@
         </Canvas>
 
         <Button x:Name="startButton" Content="Start" HorizontalAlignment="Left" Margin="238,215,0,0" VerticalAlignment="Top" Width="105" Click="startButton_Click" Height="28" Grid.ColumnSpan="2"/>
+        <Label x:Name="lightList" Content="{Binding lightListHandler, NotifyOnSourceUpdated=True}" HorizontalAlignment="Left" Margin="35,24,0,0" VerticalAlignment="Top"/>
 
     </Grid>
 </Window>

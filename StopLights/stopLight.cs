@@ -13,6 +13,7 @@ namespace StopLights
         private Brush lightActive;
         private Brush arrowActive;
         private bool moreCars;
+        private int ID;
         public event PropertyChangedEventHandler PropertyChanged;
 
         public Brush lightColor 
@@ -45,9 +46,19 @@ namespace StopLights
             }
         }
 
-        public stopLight() 
+        public string name
+        {
+            get { return "Stoplight #" + ID.ToString(); }
+            set
+            {
+                ID = Convert.ToInt32(value);
+            }
+        }
+
+        public stopLight(int i) 
         {
             carsWaiting = false;
+            name = (i + 1).ToString();
         }
 
         protected void OnPropertyChanged(string name)
