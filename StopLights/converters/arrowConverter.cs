@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Data;
+using System.Windows.Media;
 
 namespace StopLights.converters
 {
@@ -12,9 +13,9 @@ namespace StopLights.converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            bool val = System.Convert.ToBoolean(value);
+            Brush val = (Brush)value;
 
-            if (val == true)
+            if (val == Brushes.Yellow)
                 return "Visible";
             else
                 return "Hidden";

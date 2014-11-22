@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -12,37 +13,47 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace StopLights
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
+
     public partial class MainWindow : Window
     {
         //Value used to parse the int from the button names using substring in the button_Click handler.
         private const int AFTERBUTTON = 6;
+       
+        private const int ONESECOND = 1000;
+        private const int TWOSECONDS = 2000;
         private const int FIVESECONDS = 5000;
         private const int THIRTYSECONDS = 30000;
-        private stopLight[] lights;
+
+        private static int currentLight;
+        private static stopLight[] lights;
+        private static Queue<int> lightOrder;
+        private static DispatcherTimer dispatcherTimer;
+        private static int stopWatch;
 
         public MainWindow()
         {
             InitializeComponent();
         }
 
-        public async Task cycleLights()
+        private static void initializeDPTimer()
         {
-            while (true)
-            {
-                changeLights(3);
-                await Task.Delay(FIVESECONDS);
-                changeLights(2);
-                await Task.Delay(FIVESECONDS);
-                changeLights(1);
-                await Task.Delay(FIVESECONDS);
-            }
-            
+            dispatcherTimer = new System.Windows.Threading.DispatcherTimer();
+            dispatcherTimer.Tick += dispatcherTimer_Tick;
+            dispatcherTimer.Interval = new TimeSpan(0, 0, 1);
+        }
+
+        public static async Task cycleLights()
+        {
+            changeLights(2);
+            stopWatch = 0;
+            dispatcherTimer.Start();
         }
 
         //Initializes the stopLight objects, enables the buttons, and sets the default light configuration.
@@ -53,8 +64,9 @@ namespace StopLights
             for (int i = 0; i < 4; i++)
                 lights[i] = new stopLight();
 
-            
+            lightOrder = new Queue<int>();
             initializeStopLights();
+            initializeDPTimer();
             cycleLights();
         }
 
@@ -65,29 +77,33 @@ namespace StopLights
             LightTwo.DataContext = lights[1];
             LightThree.DataContext = lights[2];
             LightFour.DataContext = lights[3];
+
+            initalizeLightColors();
         }
 
         //Uses a switch statement to set the lights to red or green based on boolean values.
-        private void changeLights(int carLocation) 
-        { 
-            switch(carLocation)
+        private static async Task changeLights(int lightID) 
+        {
+            currentLight = lightID;
+
+            await transitionToRed();
+            await Task.Delay(ONESECOND);
+
+            switch (lightID)
             {
+                case 0:
+                    lights[0].lightColor = Brushes.Green;
+                    break;
                 case 1:
-                    turnLightsRed();
-                    lights[0].isLightGreen = true;
+                case 3:
+                    lights[1].lightColor = Brushes.Green;
+                    lights[3].lightColor = Brushes.Green;
+                    lights[3].arrowColor = Brushes.Green;
                     break;
                 case 2:
-                case 4:
-                    turnLightsRed();
-                    lights[1].isLightGreen = true;
-                    lights[3].isLightGreen = true;
-                    lights[3].isArrowGreen = true;
-                    break;
-                case 3:
-                    turnLightsRed();
-                    lights[2].isLightGreen = true;
-                    lights[2].isArrowGreen = true;
-                    lights[3].isArrowGreen = true;
+                    lights[2].lightColor = Brushes.Green;
+                    lights[2].arrowColor = Brushes.Green;
+                    lights[3].arrowColor = Brushes.Green;
                     break;
                 default:
                     break;
@@ -95,19 +111,62 @@ namespace StopLights
         }
 
         //Cycles through all of the lights and sets their values to red. Used to clear the lights before each new configuration.
-        private void turnLightsRed()
+        private static async Task transitionToRed()
         {
             foreach (stopLight light in lights)
             {
-                light.isArrowGreen = false;
-                light.isLightGreen = false;
+                if (light.lightColor == Brushes.Green)
+                    light.lightColor = Brushes.Yellow;
+                if (light.arrowColor == Brushes.Green)
+                    light.arrowColor = Brushes.Yellow;
+            }
+
+            await Task.Delay(TWOSECONDS);
+
+            foreach (stopLight light in lights)
+            {
+                if (light.lightColor == Brushes.Yellow)
+                    light.lightColor = Brushes.Red;
+                if (light.arrowColor == Brushes.Yellow)
+                    light.arrowColor = Brushes.Red;
+            }
+
+        }
+
+        private static void initalizeLightColors()
+        {
+            foreach (stopLight light in lights)
+            {
+                light.lightColor = Brushes.Red;
+                light.arrowColor = Brushes.Red;
             }
         }
 
         private void button_Click(object sender, RoutedEventArgs e)
         {
-            int ID = Convert.ToInt32(((Button)sender).Name.Substring(AFTERBUTTON)) - 1;
-            lights[ID].amountCarsWaiting++;
+            int lightID = Convert.ToInt32(((Button)sender).Name.Substring(AFTERBUTTON))-1;
+            
+            if(lightID != currentLight && !lightOrder.Contains(lightID))
+                lightOrder.Enqueue(lightID);
+
+            lights[lightID].carsWaiting = true;
+        }
+
+        private static async void dispatcherTimer_Tick(object sender, EventArgs e)
+        {
+            if(lightOrder.Count != 0)
+                stopWatch++;
+
+            if ((stopWatch == 5 || stopWatch == 16) && !lights[currentLight].carsWaiting && lightOrder.Count != 0)
+            {
+                await changeLights(lightOrder.Dequeue());
+                stopWatch = 0;
+            }
+            else if (stopWatch == 5 && lights[currentLight].carsWaiting)
+            {
+                await Task.Delay(10000);
+                lights[currentLight].carsWaiting = false;
+            }
         }
         
     }

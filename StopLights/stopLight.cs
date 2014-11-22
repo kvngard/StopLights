@@ -4,44 +4,52 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media;
 
 namespace StopLights
 {
     class stopLight : INotifyPropertyChanged
     {
-        private bool lightActive;
-        private bool arrowActive;
-        private int carCount;
+        private Brush lightActive;
+        private Brush arrowActive;
+        private bool moreCars;
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public bool isLightGreen 
+        public Brush lightColor 
         {
             get { return lightActive; }
             set
             { 
                 lightActive = value;
-                OnPropertyChanged("isLightGreen");
+                OnPropertyChanged("lightColor");
             }
         }
 
-        public bool isArrowGreen
+        public Brush arrowColor
         {
             get { return arrowActive; }
             set
             {
                 arrowActive = value;
-                OnPropertyChanged("isArrowGreen");
+                OnPropertyChanged("arrowColor");
             }
         }
-        public int amountCarsWaiting
+
+        public bool carsWaiting
         {
-            get { return carCount; }
+            get { return moreCars; }
             set
             {
-                carCount = value;
-                OnPropertyChanged("amountCarsWaiting");
+                moreCars = value;
+                OnPropertyChanged("carsWaiting");
             }
         }
+
+        public stopLight() 
+        {
+            carsWaiting = false;
+        }
+
         protected void OnPropertyChanged(string name)
         {
             PropertyChangedEventHandler handler = PropertyChanged;
@@ -51,18 +59,5 @@ namespace StopLights
             }
         }
 
-        public stopLight() 
-        {
-            amountCarsWaiting = 0;
-        }
-
-        public void emptyWaitingQueue()
-        {
-            if (isArrowGreen || isLightGreen)
-            {
-                while (amountCarsWaiting != 0)
-                    amountCarsWaiting--;
-            }
-        }
     }
 }

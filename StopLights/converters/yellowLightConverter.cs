@@ -9,14 +9,14 @@ using System.Windows.Media;
 
 namespace StopLights.converters
 {
-    class greenLightConverter : IValueConverter
+    class yellowLightConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             Brush val = (Brush)value;
 
-            if (val == Brushes.Green)
-                return Brushes.Green;
+            if (val == Brushes.Yellow)
+                return Brushes.Yellow;
             else
                 return Brushes.Gray;
         }

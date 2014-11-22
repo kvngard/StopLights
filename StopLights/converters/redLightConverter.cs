@@ -14,9 +14,9 @@ namespace StopLights.converters
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            bool val = System.Convert.ToBoolean(value);
+            Brush val = (Brush)value;
 
-            if (val == false)
+            if (val == Brushes.Red)
                 return Brushes.Red;
             else
                 return Brushes.Gray;

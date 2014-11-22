@@ -3,51 +3,56 @@
         xmlns:converters="clr-namespace:StopLights.converters"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="MainWindow" Height="372" Width="525">
+        Title="MainWindow" Height="535" Width="588">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="262.5*"/>
             <ColumnDefinition Width="262.5*"/>
         </Grid.ColumnDefinitions>
         <Grid.Resources>
-            <converters:redLightConverter x:Key="redConverter"/>
+            <converters:arrowConverter x:Key="arrowConverter"/>
             <converters:greenLightConverter x:Key="greenConverter"/>
-            <converters:arrowConverter x:Key="arrowConverter" />
+            <converters:yellowLightConverter x:Key="yellowConverter"/>
+            <converters:redLightConverter x:Key="redConverter"/>
         </Grid.Resources>
 
-        <Canvas x:Name="LightOne" Margin="224,0,224,168">
-            <Rectangle x:Name="One" Fill="#FF686868" HorizontalAlignment="Left" Height="104" Stroke="Black" VerticalAlignment="Top" Width="55" Grid.ColumnSpan="2" Canvas.Left="7" Canvas.Top="26"/>
-            <Rectangle x:Name="OneRed" Fill="{Binding isLightGreen, Converter={StaticResource redConverter}}" HorizontalAlignment="Left" Height="45" Stroke="Black" VerticalAlignment="Top" Width="45" RadiusY="50" RadiusX="50" Grid.ColumnSpan="2" Canvas.Left="12" Canvas.Top="33"/>
-            <Rectangle x:Name="OneGreen" Fill="{Binding isLightGreen, Converter={StaticResource greenConverter}}" HorizontalAlignment="Left" Height="45" Stroke="Black" VerticalAlignment="Top" Width="45" RadiusY="50" RadiusX="50" Grid.ColumnSpan="2" Canvas.Left="12" Canvas.Top="81"/>
+        <Canvas x:Name="LightOne" Margin="257,10,257,261" Grid.ColumnSpan="2">
+            <Rectangle x:Name="One"  Fill="#575757" HorizontalAlignment="Left" Height="161" Stroke="Black" VerticalAlignment="Top" Width="55" RadiusY="15" RadiusX="15" StrokeThickness="3" Grid.ColumnSpan="2" Canvas.Left="7" Canvas.Top="26"/>
+            <Rectangle x:Name="OneRed" Fill="{Binding lightColor, Converter={StaticResource redConverter}}" HorizontalAlignment="Left" Height="45" Stroke="Black" VerticalAlignment="Top" Width="45" RadiusY="50" RadiusX="50" Grid.ColumnSpan="2" Canvas.Left="12" Canvas.Top="33"/>
+            <Rectangle x:Name="OneYellow" Fill="{Binding lightColor, Converter={StaticResource yellowConverter}}" HorizontalAlignment="Left" Height="45" Stroke="Black" VerticalAlignment="Top" Width="45" RadiusY="50" RadiusX="50" Grid.ColumnSpan="2" Canvas.Left="12" Canvas.Top="84"/>
+            <Rectangle x:Name="OneGreen" Fill="{Binding lightColor, Converter={StaticResource greenConverter}}" HorizontalAlignment="Left" Height="45" Stroke="Black" VerticalAlignment="Top" Width="45" RadiusY="50" RadiusX="50" Grid.ColumnSpan="2" Canvas.Left="12" Canvas.Top="134"/>
             <Button x:Name="button1" Content="Car at #1" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Click="button_Click" Grid.Column="1" Canvas.Left="78" Canvas.Top="33"/>
         </Canvas>
 
-        <Canvas x:Name="LightTwo" Margin="58,80,128,111" Grid.Column="1">
-            <Rectangle x:Name="Two" Fill="#FF686868" HorizontalAlignment="Left" Height="104" Stroke="Black" VerticalAlignment="Top" Width="55" Grid.Column="1" Canvas.Left="10" Canvas.Top="15"/>
-            <Rectangle x:Name="TwoRed" Fill="{Binding isLightGreen, Converter={StaticResource redConverter}}" HorizontalAlignment="Left" Height="45" Stroke="Black" VerticalAlignment="Top" Width="45" RadiusY="50" RadiusX="50" Grid.Column="1" Canvas.Left="15" Canvas.Top="19"/>
-            <Rectangle x:Name="TwoGreen" Fill="{Binding isLightGreen, Converter={StaticResource greenConverter}}" HorizontalAlignment="Left" Height="45" Stroke="Black" VerticalAlignment="Top" Width="45" RadiusY="50" RadiusX="50" Grid.Column="1" Canvas.Left="15" Canvas.Top="70"/>
-            <Button x:Name="button2" Content="Car at #2" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Canvas.Left="79" Canvas.Top="62"/>
+        <Canvas x:Name="LightTwo" Margin="100,134,107,179" Grid.Column="1">
+            <Rectangle x:Name="Two"  Fill="#575757" HorizontalAlignment="Left" Height="161" Stroke="Black" VerticalAlignment="Top" Width="55" RadiusY="15" RadiusX="15" StrokeThickness="3" Grid.Column="1" Canvas.Left="10" Canvas.Top="15"/>
+            <Rectangle x:Name="TwoRed" Fill="{Binding lightColor, Converter={StaticResource redConverter}}" HorizontalAlignment="Left" Height="45" Stroke="Black" VerticalAlignment="Top" Width="45" RadiusY="50" RadiusX="50" Grid.Column="1" Canvas.Left="15" Canvas.Top="23"/>
+            <Rectangle x:Name="TwoYellow" Fill="{Binding lightColor, Converter={StaticResource yellowConverter}}" HorizontalAlignment="Left" Height="45" Stroke="Black" VerticalAlignment="Top" Width="45" RadiusY="50" RadiusX="50" Grid.Column="1" Canvas.Left="15" Canvas.Top="73"/>
+            <Rectangle x:Name="TwoGreen" Fill="{Binding lightColor, Converter={StaticResource greenConverter}}" HorizontalAlignment="Left" Height="45" Stroke="Black" VerticalAlignment="Top" Width="45" RadiusY="50" RadiusX="50" Grid.Column="1" Canvas.Left="15" Canvas.Top="123"/>
+            <Button x:Name="button2" Content="Car at #2" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Canvas.Left="79" Canvas.Top="62" Click="button_Click"/>
         </Canvas>
 
-        <Canvas x:Name="LightThree" Margin="219,146,219,8" Grid.ColumnSpan="2">
-            <Rectangle x:Name="Three" Fill="#FF686868" HorizontalAlignment="Left" Height="158" Stroke="Black" VerticalAlignment="Top" Width="55" Grid.ColumnSpan="2" Canvas.Left="11" Canvas.Top="3"/>
-            <Rectangle x:Name="ThreeRed" Fill="{Binding isLightGreen, Converter={StaticResource redConverter}}" HorizontalAlignment="Left" Height="45" Stroke="Black" VerticalAlignment="Top" Width="45" RadiusY="50" RadiusX="50" Grid.ColumnSpan="2" Canvas.Left="16" Canvas.Top="9"/>
-            <Rectangle x:Name="ThreeGreen" Fill="{Binding isLightGreen, Converter={StaticResource greenConverter}}" HorizontalAlignment="Left" Height="45" Stroke="Black" VerticalAlignment="Top" Width="45" RadiusY="50" RadiusX="50" Grid.ColumnSpan="2" Canvas.Left="16" Canvas.Top="61"/>
-            <Rectangle x:Name="ThreeArrowBack" Fill="Gray" HorizontalAlignment="Left" Height="45" Stroke="Black" VerticalAlignment="Top" Width="45" RadiusY="50" RadiusX="50" Grid.ColumnSpan="2" Canvas.Left="16" Canvas.Top="112"/>
-            <Path x:Name="ThreeArrowLeft" Visibility="{Binding isArrowGreen, Converter={StaticResource arrowConverter}}" Width="26.847" Height="21.57" Stretch="Uniform" Fill="Green" Data="F1 M 0,10.7852L 14.0247,21.5698L 14.0247,14.7494L 26.8469,14.7494L 26.8469,6.82025L 14.0247,6.82025L 14.0247,0L 0,10.7852 Z " Stroke="Black" Grid.ColumnSpan="2" Canvas.Left="24.076" Canvas.Top="123.715"/>
-            <Button x:Name="button3" Content="Car at #3" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Canvas.Left="84" Canvas.Top="112"/>
+        <Canvas x:Name="LightThree" Margin="250,258,248,10" Grid.ColumnSpan="2">
+            <Rectangle x:Name="Three"  Fill="#575757" HorizontalAlignment="Left" Height="208" Stroke="Black" VerticalAlignment="Top" Width="55" RadiusY="15" RadiusX="15" StrokeThickness="3" Grid.ColumnSpan="2" Canvas.Left="11" Canvas.Top="3"/>
+            <Rectangle x:Name="ThreeRed" Fill="{Binding lightColor, Converter={StaticResource redConverter}}" HorizontalAlignment="Left" Height="45" Stroke="Black" VerticalAlignment="Top" Width="45" RadiusY="50" RadiusX="50" Grid.ColumnSpan="2" Canvas.Left="16" Canvas.Top="9"/>
+            <Rectangle x:Name="ThreeYellow" Fill="{Binding lightColor, Converter={StaticResource yellowConverter}}" HorizontalAlignment="Left" Height="45" Stroke="Black" VerticalAlignment="Top" Width="45" RadiusY="50" RadiusX="50" Grid.ColumnSpan="2" Canvas.Left="16" Canvas.Top="59"/>
+            <Rectangle x:Name="ThreeGreen" Fill="{Binding lightColor, Converter={StaticResource greenConverter}}" HorizontalAlignment="Left" Height="45" Stroke="Black" VerticalAlignment="Top" Width="45" RadiusY="50" RadiusX="50" Grid.ColumnSpan="2" Canvas.Left="16" Canvas.Top="109"/>
+            <Rectangle x:Name="ThreeArrowBack" Fill="Gray" HorizontalAlignment="Left" Height="45" Stroke="Black" VerticalAlignment="Top" Width="45" RadiusY="50" RadiusX="50" Grid.ColumnSpan="2" Canvas.Left="16" Canvas.Top="160"/>
+            <Path x:Name="ThreeArrowLeft" Fill="{Binding arrowColor}" Width="26.848" Height="21.57" Stretch="Uniform" Data="F1 M 0,10.7852L 14.0247,21.5698L 14.0247,14.7494L 26.8469,14.7494L 26.8469,6.82025L 14.0247,6.82025L 14.0247,0L 0,10.7852 Z " Stroke="Black" Grid.ColumnSpan="2" Canvas.Left="24.076" Canvas.Top="172.215"/>
+            <Button x:Name="button3" Content="Car at #3" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Canvas.Left="84" Canvas.Top="112" Click="button_Click"/>
         </Canvas>
 
-        <Canvas x:Name="LightFour" Margin="116,50,57,57">
-            <Rectangle x:Name="Four" Fill="#FF686868" HorizontalAlignment="Left" Height="161" Stroke="Black" VerticalAlignment="Top" Width="55" Canvas.Left="16" Canvas.Top="26"/>
-            <Rectangle x:Name="FourRed" Fill="{Binding isLightGreen, Converter={StaticResource redConverter}}" HorizontalAlignment="Left" Height="45" Stroke="Black" VerticalAlignment="Top" Width="45" RadiusY="50" RadiusX="50" Canvas.Left="21" Canvas.Top="30"/>
-            <Rectangle x:Name="FourGreen"  Fill="{Binding isLightGreen, Converter={StaticResource greenConverter}}" HorizontalAlignment="Left" Height="45" Stroke="Black" VerticalAlignment="Top" Width="45" RadiusY="50" RadiusX="50" Canvas.Left="21" Canvas.Top="82"/>
-            <Rectangle x:Name="FourArrowBack" Fill="Gray" HorizontalAlignment="Left" Height="45" Stroke="Black" VerticalAlignment="Top" Width="45" RadiusY="50" RadiusX="50" Canvas.Left="21" Canvas.Top="132"/>
-            <Path x:Name="FourArrowRight" Visibility="{Binding isArrowGreen, Converter={StaticResource arrowConverter}}" Width="26.847" Height="21.57" Stretch="Uniform" Fill="Green" Data="F1 M 26.8469,10.7846L 12.8223,0L 12.8223,6.8204L 0,6.8204L 0,14.7495L 12.8223,14.7495L 12.8223,21.5697L 26.8469,10.7846 Z " Stroke="Black" Canvas.Left="30" Canvas.Top="145.43"/>
-            <Button x:Name="button4" Content="Car at #4" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Canvas.Left="-76" Canvas.Top="94"/>
+        <Canvas x:Name="LightFour" Margin="114,125,100,169">
+            <Rectangle x:Name="Four"  Fill="#575757" HorizontalAlignment="Left" Height="208" Stroke="Black" VerticalAlignment="Top" Width="55" RadiusY="15" RadiusX="15" StrokeThickness="3" Grid.ColumnSpan="2" Canvas.Left="11" Canvas.Top="3"/>
+            <Rectangle x:Name="FourRed" Fill="{Binding lightColor, Converter={StaticResource redConverter}}" HorizontalAlignment="Left" Height="45" Stroke="Black" VerticalAlignment="Top" Width="45" RadiusY="50" RadiusX="50" Grid.ColumnSpan="2" Canvas.Left="16" Canvas.Top="9"/>
+            <Rectangle x:Name="FourYellow" Fill="{Binding lightColor, Converter={StaticResource yellowConverter}}" HorizontalAlignment="Left" Height="45" Stroke="Black" VerticalAlignment="Top" Width="45" RadiusY="50" RadiusX="50" Grid.ColumnSpan="2" Canvas.Left="16" Canvas.Top="59"/>
+            <Rectangle x:Name="FourGreen" Fill="{Binding lightColor, Converter={StaticResource greenConverter}}" HorizontalAlignment="Left" Height="45" Stroke="Black" VerticalAlignment="Top" Width="45" RadiusY="50" RadiusX="50" Grid.ColumnSpan="2" Canvas.Left="16" Canvas.Top="109"/>
+            <Rectangle x:Name="FourArrowBack" Fill="Gray" HorizontalAlignment="Left" Height="45" Stroke="Black" VerticalAlignment="Top" Width="45" RadiusY="50" RadiusX="50" Grid.ColumnSpan="2" Canvas.Left="16" Canvas.Top="160"/>
+            <Path x:Name="FourArrowRight" Fill="{Binding arrowColor}" Width="26.848" Height="21.57" Stretch="Uniform" Data="F1 M 26.8469,10.7846L 12.8223,0L 12.8223,6.8204L 0,6.8204L 0,14.7495L 12.8223,14.7495L 12.8223,21.5697L 26.8469,10.7846 Z " Stroke="Black" Canvas.Left="25.076" Canvas.Top="173.215"/>
+            <Button x:Name="button4" Content="Car at #4" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Canvas.Left="-76" Canvas.Top="94" Click="button_Click"/>
         </Canvas>
 
-        <Button x:Name="startButton" Content="Start" HorizontalAlignment="Left" Margin="87,22,0,0" VerticalAlignment="Top" Width="105" Click="startButton_Click" Height="28"/>
+        <Button x:Name="startButton" Content="Start" HorizontalAlignment="Left" Margin="238,215,0,0" VerticalAlignment="Top" Width="105" Click="startButton_Click" Height="28" Grid.ColumnSpan="2"/>
 
     </Grid>
 </Window>

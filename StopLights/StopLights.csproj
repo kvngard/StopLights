@@ -59,6 +59,7 @@
     <Compile Include="converters\arrowConverter.cs" />
     <Compile Include="converters\greenLightConverter.cs" />
     <Compile Include="converters\redLightConverter.cs" />
+    <Compile Include="converters\yellowLightConverter.cs" />
     <Compile Include="stopLight.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
