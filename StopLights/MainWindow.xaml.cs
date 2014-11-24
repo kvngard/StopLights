@@ -34,9 +34,8 @@ namespace StopLights
         private const int TWENTYFOURSECONDS = 24000;
 
         private int currentLight; //Used to store the value of the stoplight that is currently enabled.
-        private int lastEnqueuedLight; //Holds the value of the last light to be stored in the waiting queue.
         private stopLight[] lights; //Holds all of the stoplight objects that have been created.
-        private Queue<int> lightOrder; //Stores a list of stoplight IDs in the order in which the sensors detected a car.
+        private List<int> lightOrder; //Stores a list of stoplight IDs in the order in which the sensors detected a car. Switched to a list for the remove functionality.
         private DispatcherTimer dispatcherTimer; //Timer used fire a tick event on the thread.
         private bool transitioning; //Flag used to show that lights are switching. Used to prevent the stopwatch from incrementing as the lights change.
         private int stopWatch; //Holds the time (in seconds) since the lights changed or since a car was detected at a light.
@@ -53,12 +52,11 @@ namespace StopLights
             dispatcherTimer.Interval = new TimeSpan(0, 0, 1);
         }
 
-        //Sets the initial configuration, and resets the stopwatch and last enqueued light.
+        //Sets the initial configuration and resets the stopwatch.
         public async Task cycleLights()
         {
             await changeLights(2);
             stopWatch = 0;
-            lastEnqueuedLight = -1;
             dispatcherTimer.Start();
         }
 
@@ -70,7 +68,7 @@ namespace StopLights
             for (int i = 0; i < 4; i++)
                 lights[i] = new stopLight(i);
 
-            lightOrder = new Queue<int>();
+            lightOrder = new List<int>();
             enableButtons();
             initializeStopLights();
             initializeDPTimer();
@@ -102,6 +100,11 @@ namespace StopLights
             //Sets the current to the light we're changing to. Sets the flag for waiting cars at that light to false.
             currentLight = lightID;
             lights[currentLight].carsWaiting = false;
+
+            if (lightID == 1 && lightOrder.Contains(3))
+                lightOrder.Remove(3);
+            if (lightID == 3 && lightOrder.Contains(1))
+                lightOrder.Remove(1);
 
             await transitionToRed(lightID);
             await Task.Delay(ONESECOND);
@@ -189,8 +192,7 @@ namespace StopLights
                 //If the edge cases don't apply, add the light to the queue and set the last enqueued light to lightID.
                 if (!checkForCase2or4(lightID))
                 {
-                    lightOrder.Enqueue(lightID);
-                    lastEnqueuedLight = lightID;
+                    lightOrder.Add(lightID);
                 }
                 
 
@@ -214,11 +216,10 @@ namespace StopLights
         {
             if (lightID == 3 || lightID == 1)
             {
-                //Returns true if the light being added is #4 and the last light in the queue was #2, or if the current light is #2 or #3. 
-                //Will also return true if the light being added is #2 and the last light in the queue is #4 or the current light is #4.
+                //Returns true if the light being added is #4 and the current light is #2 or #3. 
+                //Will also return true if the light being added is #2 and the current light is #4.
                 //Intended for situations where lights are green at stoplights other than the current light.
-                if ((currentLight == 3 && lightID == 1) || (currentLight == 1 && lightID == 3)
-                    || (lastEnqueuedLight == 3 && lightID == 1) || (lastEnqueuedLight == 1 && lightID == 3) || (currentLight == 2 && lightID == 3))
+                if ((currentLight == 3 && lightID == 1) || (currentLight == 1 && lightID == 3) || (currentLight == 2 && lightID == 3))
                 {
                     return true;
                 }
@@ -255,9 +256,20 @@ namespace StopLights
                 if (lightOrder.Count == 0 && currentLight != 2)
                     await changeLights(2);
                 else
-                    await changeLights(lightOrder.Dequeue()); //Gets the light at the front of the queue and transitions to it.
+                    await changeLights(RemoveAndGetLast()); //Gets the light at the front of the queue and transitions to it.
             }
             
+        }
+
+        //Allows for the same functionality as a dequeue function, but on our list.
+        private int RemoveAndGetLast()
+        {
+            lock (lightOrder)
+            {
+                int value = lightOrder[0];
+                lightOrder.RemoveAt(0);
+                return value;
+            }
         }
 
         //Updates the label with a list of the currently occupied lights.
