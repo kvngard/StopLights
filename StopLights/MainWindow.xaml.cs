@@ -19,61 +19,51 @@ using System.Windows.Threading;
 namespace StopLights
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Group: 1-3, Ty Anderson, Cody Booher, Kevin Gardner, and Tyler White
+    /// Last Edited On: 11/24/14
+    /// Description: Models the behavior of a stoplight at the intersection of 300 N and 900 E in Provo UT.
     /// </summary>
 
-    public partial class MainWindow : Window, INotifyPropertyChanged
+    public partial class MainWindow : Window
     {
         //Value used to parse the int from the button names using substring in the button_Click handler.
         private const int AFTERBUTTON = 6;
        
         private const int ONESECOND = 1000;
         private const int TWOSECONDS = 2000;
-        private const int FIVESECONDS = 5000;
-        private const int THIRTYSECONDS = 30000;
+        private const int TWENTYFOURSECONDS = 24000;
 
-        private static int currentLight;
-        private static stopLight[] lights;
-        private static Queue<int> lightOrder;
-        private static DispatcherTimer dispatcherTimer;
-        private static bool transitioning;
-        private static int stopWatch;
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        private static string lightListText = "Cars are waiting at:\n";
-
-        public string lightListHandler
-        {
-            get { return lightListText; }
-            set
-            {
-                lightListText = value;
-                OnPropertyChanged("lightListHandler");
-            }
-        }
+        private int currentLight; //Used to store the value of the stoplight that is currently enabled.
+        private int lastEnqueuedLight; //Holds the value of the last light to be stored in the waiting queue.
+        private stopLight[] lights; //Holds all of the stoplight objects that have been created.
+        private Queue<int> lightOrder; //Stores a list of stoplight IDs in the order in which the sensors detected a car.
+        private DispatcherTimer dispatcherTimer; //Timer used fire a tick event on the thread.
+        private bool transitioning; //Flag used to show that lights are switching. Used to prevent the stopwatch from incrementing as the lights change.
+        private int stopWatch; //Holds the time (in seconds) since the lights changed or since a car was detected at a light.
 
         public MainWindow()
         {
             InitializeComponent();
         }
 
-        private static void initializeDPTimer()
+        private void initializeDPTimer()
         {
             dispatcherTimer = new System.Windows.Threading.DispatcherTimer();
             dispatcherTimer.Tick += dispatcherTimer_Tick;
             dispatcherTimer.Interval = new TimeSpan(0, 0, 1);
         }
 
-        public static async Task cycleLights()
+        //Sets the initial configuration, and resets the stopwatch and last enqueued light.
+        public async Task cycleLights()
         {
-            changeLights(2);
+            await changeLights(2);
             stopWatch = 0;
+            lastEnqueuedLight = -1;
             dispatcherTimer.Start();
         }
 
         //Initializes the stopLight objects, enables the buttons, and sets the default light configuration.
-        private void startButton_Click(object sender, RoutedEventArgs e)
+        private async void startButton_Click(object sender, RoutedEventArgs e)
         {
             lights = new stopLight[4];
 
@@ -81,9 +71,18 @@ namespace StopLights
                 lights[i] = new stopLight(i);
 
             lightOrder = new Queue<int>();
+            enableButtons();
             initializeStopLights();
             initializeDPTimer();
-            cycleLights();
+            await cycleLights();
+        }
+
+        private void enableButtons()
+        {
+            button1.IsEnabled = true;
+            button2.IsEnabled = true;
+            button3.IsEnabled = true;
+            button4.IsEnabled = true;
         }
 
         //Connects the stoplight objects to the corresponding canvas groupings.
@@ -93,18 +92,18 @@ namespace StopLights
             LightTwo.DataContext = lights[1];
             LightThree.DataContext = lights[2];
             LightFour.DataContext = lights[3];
-            lightList.DataContext = lightListText;
 
             initalizeLightColors();
         }
 
         //Uses a switch statement to set the lights to red or green based on boolean values.
-        private static async Task changeLights(int lightID) 
+        private async Task changeLights(int lightID) 
         {
+            //Sets the current to the light we're changing to. Sets the flag for waiting cars at that light to false.
             currentLight = lightID;
             lights[currentLight].carsWaiting = false;
 
-            await transitionToRed();
+            await transitionToRed(lightID);
             await Task.Delay(ONESECOND);
 
             switch (lightID)
@@ -113,6 +112,7 @@ namespace StopLights
                     lights[0].lightColor = Brushes.Green;
                     break;
                 case 1:
+                case 3:
                     lights[1].lightColor = Brushes.Green;
                     lights[3].lightColor = Brushes.Green;
                     lights[3].arrowColor = Brushes.Green;
@@ -125,19 +125,30 @@ namespace StopLights
                 default:
                     break;
             }
+
+            //Updates the label with a list of the currently occupied lights.
+            displayQueue();
+
+            transitioning = false;
         }
 
         //Cycles through all of the lights and sets their values to red. Used to clear the lights before each new configuration.
-        private static async Task transitionToRed()
+        private async Task transitionToRed(int lightID)
         {
             foreach (stopLight light in lights)
             {
                 if (light.lightColor == Brushes.Green)
                     light.lightColor = Brushes.Yellow;
-                if (light.arrowColor == Brushes.Green)
-                    light.arrowColor = Brushes.Yellow;
+
+                //Ensures that arrows only change colors for the cases where they need to (e.g., the transition from #2/#4 to 1 or from #3 to 1 or 2).
+                if ((light.name == "Stoplight #4" && currentLight == 0) || (light.name == "Stoplight #3" && currentLight != 2))
+                {
+                    if (light.arrowColor == Brushes.Green)
+                        light.arrowColor = Brushes.Yellow;
+                }
             }
 
+            //Delay to make yellow lights more visible.
             await Task.Delay(TWOSECONDS);
 
             foreach (stopLight light in lights)
@@ -147,11 +158,10 @@ namespace StopLights
                 if (light.arrowColor == Brushes.Yellow)
                     light.arrowColor = Brushes.Red;
             }
-
-            transitioning = false;
         }
 
-        private static void initalizeLightColors()
+        //Sets all of the lights to red at the beginning of the program.
+        private void initalizeLightColors()
         {
             foreach (stopLight light in lights)
             {
@@ -162,66 +172,104 @@ namespace StopLights
 
         private void button_Click(object sender, RoutedEventArgs e)
         {
+
+            //Uses the substring function to parse the name variable of the active button. Gets the ID of the light and then subtracts 1 to put it into a 0-based format.
             int lightID = Convert.ToInt32(((Button)sender).Name.Substring(AFTERBUTTON))-1;
 
-            if (lightID == 3)
-                lightID = 1;
-
+            //Confirms that the light being pushed is not the current light. Used to avoid adding the current light to the queue of waiting lights.
             if (lightID != currentLight && !lightOrder.Contains(lightID)) 
-            { 
-                if(lightOrder.Count == 0)
+            {
+                if (lightOrder.Count == 0)
+                {
+                    //If no light has cars waiting and a car arrives at a light that isn't the main one, resets the stopwatch to 0.
                     lights[currentLight].carsWaiting = false;
+                    stopWatch = 0;
+                }
 
-                lightOrder.Enqueue(lightID);
+                //If the edge cases don't apply, add the light to the queue and set the last enqueued light to lightID.
+                if (!checkForCase2or4(lightID))
+                {
+                    lightOrder.Enqueue(lightID);
+                    lastEnqueuedLight = lightID;
+                }
                 
+
+                //Updates the label with a list of the currently occupied lights.
+                displayQueue();
             }
 
-            lights[lightID].carsWaiting = true;
+            //Checks for the edge case of having a car go through a green light that isn't part of the current stoplight object 
+            //(e.g., a car going through stoplight 4 when stoplight 2 is designated as the current light.
+            if ((currentLight == 1 && lightID == 3) || (currentLight == 3 && lightID == 1) || (currentLight == 2 && lightID == 3))
+            {
+                lights[currentLight].carsWaiting = true;
+            }
+            else
+            {
+                lights[lightID].carsWaiting = true;
+            }
         }
 
-        private static async void dispatcherTimer_Tick(object sender, EventArgs e)
+        private bool checkForCase2or4(int lightID)
         {
+            if (lightID == 3 || lightID == 1)
+            {
+                //Returns true if the light being added is #4 and the last light in the queue was #2, or if the current light is #2 or #3. 
+                //Will also return true if the light being added is #2 and the last light in the queue is #4 or the current light is #4.
+                //Intended for situations where lights are green at stoplights other than the current light.
+                if ((currentLight == 3 && lightID == 1) || (currentLight == 1 && lightID == 3)
+                    || (lastEnqueuedLight == 3 && lightID == 1) || (lastEnqueuedLight == 1 && lightID == 3) || (currentLight == 2 && lightID == 3))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private async void dispatcherTimer_Tick(object sender, EventArgs e)
+        {
+            //Checks to see if default state conditions are met.
             if (lightOrder.Count == 0 && currentLight == 2)
                 return;
 
-            displayQueue();
-
+            //Increments the stopwatch if they light's aren't changing.
             if (!transitioning)
+            {
                 stopWatch++;
-
-            if (lightOrder.Count == 0 && currentLight != 2 && stopWatch == 5)
-                lightOrder.Enqueue(2);
-
-            if ((stopWatch == 5 || stopWatch == 30) && !lights[currentLight].carsWaiting)
-            {
-                transitioning = true;
-                stopWatch = 0; 
-                await changeLights(lightOrder.Dequeue());  
+                stopWatchDisplay.Content = "Stopwatch: " + stopWatch.ToString();
             }
-            else if (stopWatch == 5 && lights[currentLight].carsWaiting)
+
+            //Sets a 24 second timer at 5 seconds if cars have arrived at a green light.
+            if (stopWatch == 5 && lights[currentLight].carsWaiting)
             {
-                await Task.Delay(24000);
+                await Task.Delay(TWENTYFOURSECONDS); //Pauses for 24 seconds. Only 24 because we're at 5 seconds and an additional second will be added by the stopwatch when this handler fires again.
                 lights[currentLight].carsWaiting = false;
+            } 
+            //Transitions the light at 5 or 30 seconds if the carswaiting value is false;
+            else if ((stopWatch == 5 || stopWatch == 30) && !lights[currentLight].carsWaiting)
+            {
+                transitioning = true; //Sets flag to pause the stopwatch
+                stopWatch = 0; //Resets the stopwatch
+
+                if (lightOrder.Count == 0 && currentLight != 2)
+                    await changeLights(2);
+                else
+                    await changeLights(lightOrder.Dequeue()); //Gets the light at the front of the queue and transitions to it.
             }
             
         }
 
-        private static void displayQueue()
+        //Updates the label with a list of the currently occupied lights.
+        private void displayQueue()
         {
-            lightListText = "Cars are waiting at:\n";
+            //Reinitializes the list.
+            lightList.Content = "Cars are waiting at:\n";
 
             foreach(int i in lightOrder)
             {
-                lightListText += lights[i].name;
-            }
-        }
-
-        protected void OnPropertyChanged(string name)
-        {
-            PropertyChangedEventHandler handler = PropertyChanged;
-            if (handler != null)
-            {
-                handler(this, new PropertyChangedEventArgs(name));
+                //Adds all cars that are currently located in the waiting queue.
+                lightList.Content += lights[i].name + "\n";
             }
         }
     }
